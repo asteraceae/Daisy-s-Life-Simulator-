@@ -8,6 +8,7 @@ import java.util.Scanner;
 public class Menu {
 	private Player player;
 	private Statistics stats;
+	private static final Scanner s = new Scanner(System.in);
 	
 	//4 methods 12/3
 	public Menu(Player player, Statistics stats) {
@@ -16,7 +17,6 @@ public class Menu {
 	}
 	public void openPartnerMenu() throws FileNotFoundException {
 		int choice = 0;
-		Scanner s = new Scanner(System.in);
 		while (true) {
 			System.out.println("Partner Menu Options:\n 1. Find love \n 2. Leave partner \n 3. Propose \n 4. Assault\n 5. Exit");
 			try {
@@ -35,12 +35,12 @@ public class Menu {
 					res = res.toLowerCase();
 					if (res.equals("yes")) {
 						player.setPartner(partner);
-						System.out.println("You are now dating " + partner.getName());
+						System.out.println("You are now dating " + partner.getName() + ".");
 						player.setHappiness(5);
 						break;	
 					}
 					else if (res.equals("no")) {
-						System.out.println("You chose not to date " + partner.getName() + "\n Seek someone else? (yes/no)");
+						System.out.println("You chose not to date " + partner.getName() + "." + "\n Seek someone else? (yes/no)");
 						res = s.nextLine();
 						res = res.toLowerCase();
 						if (res.equals("yes")) {
@@ -49,6 +49,10 @@ public class Menu {
 						else if (res.equals("no")) {
 							break;
 						}
+					}
+					else {
+						System.out.println("That doesn't seem to be an option, try again.");
+						continue;
 					}
 				}
 			} 
@@ -102,7 +106,6 @@ public class Menu {
 	}
 	public void openEducationMenu() {
 		int choice = 0;
-		Scanner s = new Scanner(System.in);
 		while (true) {
 			System.out.println("");
 			System.out.println("Education Menu Options:\n 1. View education \n 2. Drop out \n 3. Change study \n 4. Exit");
@@ -111,6 +114,7 @@ public class Menu {
 				}
 				catch (InputMismatchException E) {
 					choice = 10;
+					s.nextLine();
 				} 
 			if (choice == 1) {
 				player.checkEducation();
@@ -173,11 +177,14 @@ public class Menu {
 			else if (choice == 4) {
 				break;
 			}
+			else if (choice < 1 || choice > 4) {
+				System.out.println("That doesn't seem to be an option, try again.");
+				continue;
+			}
 		}
 	}
 	public void openJobMenu() throws FileNotFoundException {
 		int choice = 0;
-		Scanner s = new Scanner(System.in);
 		while (true) {
 			System.out.println("");
 			System.out.println("Job Menu Options:\n 1. Look for a job \n 2. Quit your job \n 3. Ask for a raise \n 4. Exit");
@@ -199,7 +206,7 @@ public class Menu {
 				//randomly select an attribute for jobs 5 - 16
 				
 				String job1, job2, job3, job4, job5, job6, job7, job8, job9, job10, job11, job12, job13, job14, job15, job16;
-				String job1a, job2a, job3a, job4a, job5a, job6a, job7a, job8a, job9a, job10a, job11a, job12a, job13a, job14a, job15a, job16a;
+				String job5a, job6a, job7a, job8a, job9a, job10a, job11a, job12a, job13a, job14a, job15a, job16a;
 				
 				ArrayList<String> attlist = new ArrayList<String>();
 				attlist.add("Nursing");
@@ -548,7 +555,7 @@ public class Menu {
 			else if (choice == 4) {
 				break;
 			}
-			else if (choice >= 5) {
+			else if (choice > 4 || choice < 1) {
 				System.out.println("That doesn't seem to be an option, try again.");
 				continue;
 			}

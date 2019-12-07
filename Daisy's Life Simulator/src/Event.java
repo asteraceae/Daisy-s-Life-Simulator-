@@ -1,23 +1,38 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
 
 public class Event {
 	/** EVENTS
-	 * ID OF SEVERITIES 
-	 * 1, 2, 3, 4, 5
-	 * WHEN EVENT IS CALLED, GENERATE NUMBER BETWEEN 1-5
-	 * 5 MOST SEVERE
-	 * 1 IS LEAST
-	 * CHANCES OF DEATH SHOULD BE GENERATED WITH EACH EVENT
-	 *
-	 */
+	 *create constructor 1 which is blank
+	 *create constructor 2 which actually generates event
+	 	*import obj player, stats, method chanceID
+	 *method chanceID
+	 	*int ID, double c = math random
+	 	*30% chance for event
+	 		*generate new c
+	 			*90% chance for menial event, IDs 1-5
+	 			*9% chance for moderate event, ID 9
+	 			*1% for catastrophic event, ID 10
+	 			*plug all IDS into getEvent
+	 *method getEvent
+	 	*switch ID 
+	 		*each case activates corresponding event
+	 **/
 	//8 methods 12/3
+	
+	//vars
+		//stats
+		//player
+		//killedbyevent
+		//scanner
 	private Statistics stats;
 	private Player player;
 	private boolean killedByEvent;
+	private Scanner k = new Scanner(System.in);
 	
 	public Event() {
 		
@@ -40,7 +55,7 @@ public class Event {
 				ID = (int)(Math.random() * ((9-9) + 1)) + 9;
 				getEvent(ID);
 			}
-			else if (c > 0.999) {
+			else if (c > 0.99) {
 				ID = 10;
 				//ID = (int)(Math.random() * ((1-11) + 1)) + 11;
 				getEvent(ID);
@@ -73,6 +88,28 @@ public class Event {
 		
 		}
 	}
+	//event approach
+		//generate a stranger from txt file
+		//set scanner
+		//"you have been approached by 'stranger'
+			//options give money, fight, ignore
+		//int variables for response
+		//try catch
+		//while true loop for responses
+			//1
+				//if money < 0 
+					//tell user no money
+					//activate consequences case 1
+				//else generate monetary amount and deduct from wallet
+				//consequences 0
+			//2 
+				//tell user they lowered reputation
+				//lower favor of relations
+				//consequences 2
+			//3 
+				//ignore
+				//consequences 0
+			//4 error checking
 	public void approach() throws FileNotFoundException {
 		String who; int res;
 		if (player.getAge() >= 12) {
@@ -84,9 +121,14 @@ public class Event {
 			getWho.close();
 			who = list.get(new Random().nextInt(list.size()));
 		
-			Scanner k = new Scanner(System.in);
-			System.out.println("You have been approached by " + who + ", what will you do? \n 1. Give money \n 2. Assault \n 3. Ignore them");
+			k = new Scanner(System.in);
+			System.out.println("You have been approached by " + who + ", what will you do? \n 1. Give money \n 2. Fight \n 3. Ignore them");
+			try {
 			res = k.nextInt();
+				} 
+				catch (InputMismatchException E) {
+				res = 10;
+				}
 			while(true) {
 				if (res == 1) {
 					if (player.getMoney() <= 0) {
@@ -116,7 +158,7 @@ public class Event {
 					consequences(0);
 					break;
 				}
-				else if (res > 3) {
+				else if (res > 3 || res < 1) {
 					System.out.println("That doesn't seem to be an option, try again.");
 					continue;
 				}
@@ -124,11 +166,15 @@ public class Event {
 				
 		}
 	}
+//random money + randomBigmoney
+	//works only if player age >12
+	//int give, generate monetary value
+	//tell user they found value, add to wallet
 	public void randomMoney() {
 		if (player.getAge() >= 12) {
-		int give = (int)(Math.random() * ((100-1) + 1)) + 1;
-		System.out.println("You were walking on the street and randomly found $" + give + " on the ground.");
-		player.giveMoney(-give);
+			int give = (int)(Math.random() * ((100-1) + 1)) + 1;
+			System.out.println("You were walking on the street and randomly found $" + give + " on the ground.");
+			player.giveMoney(-give);
 		}
 	}
 	public void randomBigMoney(){
@@ -136,33 +182,52 @@ public class Event {
 		System.out.println("A distant relative suddenly gifts you $" + give + " after you hear news of their passing.");
 		player.giveMoney(-give);
 	}
+//concert
+	//works if age > 12
+	//tell user they got tickets, raise happiness by 15
 	public void concert() {
 		if (player.getAge() >= 12) {
 		System.out.println("You were given concert tickets by a friend.  You had a great time.");
 		player.setHappiness(15);
 		}
 	}
+//news
+	//pulls random event from txt file and prints
 	public void news() {
 		
 	}
+//meet random person at coffee shop
+	//works if age > 12
+	//generate relation partner
+	// while true for error checking
+	// yes/no option 
 	public void meet() throws FileNotFoundException {
 		String res;
-		Scanner p = new Scanner(System.in);
+		//Scanner p = new Scanner(System.in);
 		if (player.getAge() >= 12) {
-		Relation partner = new Relation(stats, player, player.getSexuality(), "partner");
-		System.out.println("You have met " + partner.getName() + " at a coffee shop. \nAppearance: " + partner.getAppearance() + " \nAge: " + partner.getAge() +"\nWould you like to date?  (yes/no)");
-		res = p.nextLine();
-		res = res.toLowerCase();
-		if (res.equals("yes")) {
-			player.setPartner(partner);
-			System.out.println("You are now dating " + partner.getName());
-			player.setHappiness(5);
-		}
-		else if (res.equals("no")) {
-			System.out.println("You chose not to date " + partner.getName());
-		}
+			Relation partner = new Relation(stats, player, player.getSexuality(), "partner");
+			System.out.println("You have met " + partner.getName() + " at a coffee shop. \nAppearance: " + partner.getAppearance() + " \nAge: " + partner.getAge() +"\nWould you like to date?  (yes/no)");
+			while (true) {
+				res = k.nextLine();
+				res = res.toLowerCase();
+				if (res.equals("yes")) {
+					player.setPartner(partner);
+					System.out.println("You are now dating " + partner.getName() + ".");
+					player.setHappiness(5);
+					break;
+				}
+				else if (res.equals("no")) {
+					System.out.println("You chose not to date " + partner.getName() + ".");
+					break;
+				}
+				else {
+					System.out.println("That doesn't seem to be an option, try again.");
+					continue;
+				}
+			}
 		}
 	}
+
 	public void consequences(int a) throws FileNotFoundException {
 		double c = Math.random();
 		int d = (int)Math.random();

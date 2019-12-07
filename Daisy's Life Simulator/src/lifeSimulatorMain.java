@@ -9,7 +9,7 @@ public class lifeSimulatorMain {
 	
 	public static void main(String[] args) throws FileNotFoundException {
 		
-		//intro
+		//introduction
 		System.out.println("");
 		System.out.println("########################################################################");
 		System.out.println("");
@@ -46,13 +46,27 @@ public class lifeSimulatorMain {
 		System.out.println("########################################################################");
 		System.out.println("");
 		
-		//set some variables + objects
+	//set some variables + objects
+		//string answer for do / while loop
+		//scanner for user input
+		
 		String answer;
 		Scanner input = new Scanner(System.in);
-		
+	//set loops
+		//do/while - to begin/end game
+			//while (true) 1 - new year
+			//while true 2 - establish menu options again
 		do {
 		
-		//generate new stats
+		//generate new stats - establish new stats object
+		//generate mother - blank relation
+		//generate father - using mother's parameters
+		//generate player
+		//generate menu options
+		//import player into mother/father
+		//generate blank event - avoid errors
+		
+		
 		Statistics stats = new Statistics();
 		Relation mother = new Relation(true, true, stats, "mother");
 		Relation father = new Relation(stats, mother);
@@ -63,6 +77,8 @@ public class lifeSimulatorMain {
 		Event event = new Event();
 		
 		//generate a year
+		//set int response for user input, loops for logistics
+		
 		stats.setYear();
 		int response = 0, loops = 0;
 		while(true) {
@@ -76,75 +92,105 @@ public class lifeSimulatorMain {
 			//if person is dead, break the loop
 			if (player.checkDeath() == true) {
 				break;
-			//if alive, increase chances of death
+				
 			} 
 			//makes sure name isnt printed every loop
 			if (loops == 0) {
 				System.out.println(player.toString(response));
 					}
 			
-			//sets chances person will suddenly die
+			//sets chances person + relations will suddenly die
 			player.chanceDeath();
 			mother.chanceDeath();
 			father.chanceDeath();
+			//check player education status for milestones
 			player.checkEducation();
+			//tell user "started school" if player turns 5
 			if (player.getAge() == 5 && player.checkDropout() == false) {
 				System.out.println("You started school.");
 			}
+			//tell user they started elementary if age = 14
 			if (player.getAge() == 14 && player.checkDropout() == false) {
 				System.out.println("You graduated elementary school and started high school.");
 			}
+			//prompt user for college major when age = 18
+				//nursing, biology, cs, eng, business
 			if (player.getAge() == 18 && player.checkDropout() == false) {
 				int r, res;
 				System.out.println("Congratulations! You graduated high school!\n Will you go to university? \n 1. Yes \n 2. No");
-				res = input.nextInt();
-				if (res == 1) {
-					System.out.println("Choose a major: \n 1. Nursing \n 2. Biology \n 3. Computer Science \n 4. English \n 5. Business");
-					r = input.nextInt();
-					if (r == 1) {
-						player.setMajor("Nursing");
-						System.out.println("You chose Nursing.");
+				while (true) {
+					try {
+						res = input.nextInt();
+					} catch (InputMismatchException E) {
+						res = 10;
 					}
-					else if (r == 2) {
-						player.setMajor("Biology");
-						System.out.println("You chose Biology.");
+					if (res == 1) {
+						while(true) {
+							System.out.println("Choose a major: \n 1. Nursing \n 2. Biology \n 3. Computer Science \n 4. English \n 5. Business");
+							try {
+								r = input.nextInt();
+							} catch (InputMismatchException E) {
+								r = 10;
+							}
+							if (r == 1) {
+								player.setMajor("Nursing");
+								System.out.println("You chose Nursing.");	
+								break;
+							}
+							else if (r == 2) {
+								player.setMajor("Biology");
+								System.out.println("You chose Biology.");
+								break;
+							}
+							else if (r == 3) {
+								player.setMajor("Computer Science");
+								System.out.println("You chose Computer Science.");
+								break;
+							}	
+							else if (r == 4) {
+								player.setMajor("English");
+								System.out.println("You chose English.");	
+								break;
+							}
+							else if (r == 5) {
+								player.setMajor("Business");
+								System.out.println("You chose Business.");	
+								break;
+							}
+							else if (r < 1 || r > 5) {
+								System.out.println("That doesn't seem to be an option, try again.");
+								input.nextLine();
+								continue;
+							}
+						}
+						break;
 					}
-					else if (r == 3) {
-						player.setMajor("Computer Science");
-						System.out.println("You chose Computer Science.");
+				//else tell player they didnt go to university
+					//set dropout = true, check education to establish
+					else if (res == 2) {
+						System.out.println("You did not go to University.");	
+						player.dropout();
+						player.checkEducation();
+						break;
 					}
-					else if (r == 4) {
-						player.setMajor("English");
-						System.out.println("You chose English.");	
-					}
-					else if (r == 5) {
-						player.setMajor("Business");
-						System.out.println("You chose Business.");	
+					else if (res < 1 || res > 2) {
+						System.out.println("That doesn't seem to be an option, try again.");
+						input.nextLine();
+						continue;
 					}
 				}
-				else if (res == 2) {
-					System.out.println("You did not go to University.");	
-					player.dropout();
-					player.checkEducation();
-				}
+			}
+			//if age = 22, tell user they graduated college with major x
 			if (player.getAge() == 22 && player.checkDropout() == false) {
 				System.out.println("I graduated college with a degree of " + player.getMajor() + ".");
 				}
-			}
+			// age = 12, establish sexuality
+				//options girls, boys, both
+				//while true loop for options based on user input
 			if (player.getAge() == 12) {
 				System.out.println("You're now old enough to start thinking about crushes.\nYou like:\n 1. girls\n 2. boys\n 3. both");
 				while (true) {
 					int choice = 0;
-				/*double c = Math.random();
-				if (c <= 0.33) {
-					player.setSexuality("heterosexual");
-				} else if (c <=0.66) {
-					player.setSexuality("homosexual");
-				}
-				else if (c <=1) {
-					player.setSexuality("bisexual");
-				}*/
-				
 					try {
 						choice = input.nextInt();
 					} catch (InputMismatchException E) {
@@ -171,9 +217,13 @@ public class lifeSimulatorMain {
 			}
 			
 			//action loop
+			//if loop isnt the first, generate an event
 			if (loops != 0) {
 				event = new Event(player, stats);
 				}
+			
+			//menu options = age, check stats, check relationships, open education, end life, try lottery, partner menu, job menu
+			//latter 2 opens only if player is age >12 and >!6
 			while (true) {
 				System.out.println("");
 				System.out.println("What would you like to do? \n 1. Age! \n 2. Check Stats \n 3. Check Relationships \n 4. Open Education Menu \n 5. End Life \n 6. Try the lottery.");
@@ -185,6 +235,7 @@ public class lifeSimulatorMain {
 				}
 				
 				System.out.println("");
+				//try/catch, if response isnt an int, set response to something out of menu so that it generates error message
 					try {
 						response = input.nextInt();
 					}catch (InputMismatchException E) {
@@ -207,23 +258,26 @@ public class lifeSimulatorMain {
 					} else if (response == 2) {
 						System.out.println(player.toString(response));
 						continue;
-					//relationships
+				//relationships
 					} else if (response == 3) {
 						System.out.println("Mother: " + mother + "\nFather: " + father);	
 						if (player.isDating() == true) {
 						System.out.println("Partner: " + player.getPartner());
 						}
-						//suicide function
+						
 					}
+				//education
+					//check then open
 					else if (response == 4) {
 						player.checkEducation();
 						menu.openEducationMenu();
 						continue;
 					}
 				
-			//suicide function
+			//death function
 					else if (response == 5) {
 						//if person too young, don't kill
+						//import failure message from txt file
 						if (player.getAge() < 12) {
 							String msg;
 							Scanner a = new Scanner(new File("childNoSuicide.txt"));
@@ -236,8 +290,11 @@ public class lifeSimulatorMain {
 							System.out.println(msg);
 							System.out.println("You don't even understand life and death yet. Choose something else.");
 							continue;
-					//allow death
+						
 						}
+						//allow chance of death
+						//chance of failure is 40%
+						//import failure message from txt file
 						else {
 						stats.chanceRandom();
 							if (stats.chanceRandom() <= 0.4) {
@@ -258,11 +315,13 @@ public class lifeSimulatorMain {
 							}
 						}
 						
-					} 
+					}
+				//lottery
 					else if (response == 6) {
 						menu.lottery();
 						continue;
 					}
+				//partner menu
 					else if (response == 7){
 						if (player.getAge() < 12) {
 							System.out.println("That doesn't seem to be an option, try again.");
@@ -275,6 +334,7 @@ public class lifeSimulatorMain {
 
 						}
 					}
+				//job menu
 					else if (response == 8){
 						if (player.getAge() < 12) {
 							System.out.println("That doesn't seem to be an option, try again.");
@@ -284,11 +344,13 @@ public class lifeSimulatorMain {
 						menu.openJobMenu();
 						continue;
 						}
-					}	
-					else if (response >= 8){
+					}
+				//error message
+					else if (response >= 8 || response < 1){
 						System.out.println("That doesn't seem to be an option, try again.");
 						continue;
-					}	
+					}
+				//safechecking so that loop doesnt repeat
 				if (response == 1 || player.isDead() == true) {
 					break;
 				}
@@ -296,10 +358,18 @@ public class lifeSimulatorMain {
 					continue;
 				}
 			}
+			//add 1 to loop
 			loops++;
 			continue;
 		}
-		//death
+	//death
+		//decide who goes to funeral
+		//determine what cause of death was
+		//print the obituary
+		
+	//new while true loop to determine if player wants to start new life
+	//answer = input next converted to lowercase
+	//include error checking
 		player.whoAttendsFuneral(); 
 		player.setCauseDeath(event);
 		System.out.println(player.getObituary(stats.getYear(), stats.getDayMonth()));
